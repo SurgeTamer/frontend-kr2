@@ -27,7 +27,6 @@
 KR2/
 ├── server/              # Сервер и API
 │   ├── index.js         # Маршруты, auth, RBAC, Swagger
-│   ├── test-api.js      # Автотесты API (опционально)
 │   └── package.json
 ├── client/              # React-приложение
 │   ├── src/
@@ -67,7 +66,6 @@ KR2/
 
 | Роль в API | В интерфейсе | Права |
 |------------|--------------|-------|
-| `guest` | гость | Доступ к сайту + окно регистрации и авторизации |
 | `user` | покупатель | Просмотр каталога |
 | `seller` | продавец | Просмотр + создание и редактирование товаров |
 | `admin` | админ | Всё выше + удаление товаров + управление пользователями |
@@ -100,7 +98,18 @@ npm install
 npm run dev
 ```
 
-# Начальные аккаунты
+Приложение: [http://localhost:5173](http://localhost:5173)
+
+Сборка production-версии:
+
+```bash
+npm run build
+npm run preview
+```
+
+> Backend и frontend должны работать одновременно. Запросы с клиента проксируются на `localhost:3004` через Vite.
+
+## Пробные аккаунты
 
 | Email | Пароль | Роль | Имя |
 |-------|--------|------|-----|
@@ -161,8 +170,8 @@ npm run dev
 ```json
 {
   "email": "seller@perfume.shop",
-  "first_name": "Иван",
-  "last_name": "Иванов",
+  "first_name": "Анна",
+  "last_name": "Продавцова",
   "password": "qwerty123",
   "role": "seller"
 }
@@ -185,31 +194,16 @@ npm run dev
 
 Файлы фотографий размещаются в `client/public/images/` (имена соответствуют полю `image` в данных товаров, например `chanel-no5.jpg`).
 
-## Тестирование
+## Практики 7–12
 
-### Автотест API (опционально)
+Краткая сводка по таблице, что сделано из каждой практики.
 
-При запущенном сервере:
+| № | Ключевые требования задания | Где и как реализовано |
+|---|-----------------------------|------------------------|
+| 7 | Node.js API, bcrypt, пользователь, CRUD товаров, Swagger | `server/index.js` |
+| 8 | JWT при входе, `GET /auth/me`, защита операций по id товара | `authMiddleware`, `jsonwebtoken` |
+| 9 | Refresh-токен, `POST /auth/refresh`, ответ пара токенов | `generateRefreshToken`, `refreshTokens`, заголовок `Authorization` |
+| 10 | React/Vue, все маршруты API, управление товарами, вход/регистрация, логика 401→refresh | `client/`, `api/client.js` |
+| 11 | Роли гость / пользователь / продавец / админ, маршруты users, ограничения по products | `ROLES`, `roleMiddleware`, `Users.jsx` |
 
-```bash
-cd server
-node test-api.js
-```
-
-### Ручная проверка
-
-- Postman или Swagger UI — маршруты auth, products, users
-- Браузер — вход, каталог, CRUD под разными ролями, раздел «Пользователи» для admin
-
-Результаты проверки API в Postman и скриншоты интерфейса расположены в каталоге `screenshots/`.
-
-## Практические занятия
-
-| № | Тема | Реализация в проекте |
-|---|------|----------------------|
-| 7 | bcrypt, регистрация, CRUD товаров | `hashPassword`, `/api/auth/*`, `/api/products` |
-| 8 | JWT, `/api/auth/me` | `jsonwebtoken`, защищённые маршруты |
-| 9 | refresh-токены | `/api/auth/refresh`, ротация в Set |
-| 10 | React, localStorage, interceptors | `client/`, `api/client.js` |
-| 11 | RBAC | `roleMiddleware`, роли user/seller/admin |
-| 12 | Сдача КР2 | README, тестирование, открытый репозиторий |# frontend-kr2
+---
